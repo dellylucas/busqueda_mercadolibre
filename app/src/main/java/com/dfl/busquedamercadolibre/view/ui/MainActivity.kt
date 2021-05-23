@@ -1,7 +1,8 @@
-package com.dfl.busquedamercadolibre
+package com.dfl.busquedamercadolibre.view.ui
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.dfl.busquedamercadolibre.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
