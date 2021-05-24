@@ -6,9 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.dfl.busquedamercadolibre.databinding.FragmentItemsBinding
-import com.dfl.busquedamercadolibre.viewmodel.ProductsViewModelFactory
+import com.dfl.busquedamercadolibre.view.adapters.ProductsAdapter
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
 
 class ItemsFragment : Fragment() {
@@ -29,12 +28,12 @@ class ItemsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(
-            this,
-            ProductsViewModelFactory()
-        ).get(SearchViewModel::class.java)
+        vm = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
+
         vm.items.observe(viewLifecycleOwner, {
-           it
+            val adapter = ProductsAdapter(it, requireContext())
+            binding.productsRecyclerView.adapter = adapter
+            (binding.productsRecyclerView.adapter as ProductsAdapter).notifyDataSetChanged()
         })
     }
 

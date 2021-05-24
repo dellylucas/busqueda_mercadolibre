@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -16,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.dfl.busquedamercadolibre.databinding.FragmentSearchBinding
 import com.dfl.busquedamercadolibre.utils.Constants.CODE_PERMISSION
-import com.dfl.busquedamercadolibre.viewmodel.ProductsViewModelFactory
+import com.dfl.busquedamercadolibre.utils.hideKeyboard
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,18 +43,15 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         vm = ViewModelProvider(
-            this,
-            ProductsViewModelFactory()
+            requireActivity()
         ).get(SearchViewModel::class.java)
-
+        binding.searchTextInputEditText.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        binding.searchTextInputEditText.setOnEditorActionListener { v, _, _ ->
+            searchWord(v)
+            true
+        }
         binding.searchButton.setOnClickListener {
-            val text = binding.searchTextInputEditText.text.toString()
-            when {
-                requirePermission() -> showToast("Para la busqueda se requiere permiso de Internet")
-                getConnection() -> showToast("Active servicio de Internet")
-                text.isEmpty() -> showToast("Texto vacio")
-                else -> searchByName(text)
-            }
+            searchWord(view)
         }
         vm.result.observe(viewLifecycleOwner, {
             it?.let {
@@ -62,6 +60,17 @@ class SearchFragment : Fragment() {
             }
         })
 
+    }
+
+    private fun searchWord(view: View) {
+        val text = binding.searchTextInputEditText.text.toString()
+        when {
+            requirePermission() -> showToast("Para la busqueda se requiere permiso de Internet")
+            getConnection() -> showToast("Active servicio de Internet")
+            text.isEmpty() -> showToast("Texto vacio")
+            else -> searchByName(text)
+        }
+        requireContext().hideKeyboard(view)
     }
 
     private fun getConnection(): Boolean {
