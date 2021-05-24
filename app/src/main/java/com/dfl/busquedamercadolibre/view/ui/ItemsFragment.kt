@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.dfl.busquedamercadolibre.databinding.FragmentItemsBinding
+import com.dfl.busquedamercadolibre.view.adapters.INotifySelectedItem
 import com.dfl.busquedamercadolibre.view.adapters.ProductsAdapter
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
 
-class ItemsFragment : Fragment() {
+
+class ItemsFragment : Fragment(), INotifySelectedItem {
 
     // propiedad es valida entre onCreateView y onDestroyView
     private var _binding: FragmentItemsBinding? = null
@@ -31,7 +34,7 @@ class ItemsFragment : Fragment() {
         vm = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
 
         vm.items.observe(viewLifecycleOwner, {
-            val adapter = ProductsAdapter(it, requireContext())
+            val adapter = ProductsAdapter(it, requireContext(), this)
             binding.productsRecyclerView.adapter = adapter
             (binding.productsRecyclerView.adapter as ProductsAdapter).notifyDataSetChanged()
         })
@@ -40,6 +43,14 @@ class ItemsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun selectedItem(position: Int) {
+        findNavController().navigate(
+            ItemsFragmentDirections.actionItemsFragmentToDetailFragment(
+                vm.items.value!![position]
+            )
+        )
     }
 
 }

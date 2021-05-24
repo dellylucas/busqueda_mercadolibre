@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/yellow_500</item>
         <item name="colorPrimaryDark">@color/yellow_500</item>
         <item name="colorAccent">@color/purple_700</item>
+        <item name="android:textColorSecondary">@android:color/black</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>

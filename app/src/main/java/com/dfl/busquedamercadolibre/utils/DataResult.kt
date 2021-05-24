@@ -1,7 +1,8 @@
 package com.dfl.busquedamercadolibre.utils
 
-import retrofit2.HttpException
-
+/**
+ * clase para mnejo de respuesta de fuente de datos
+ */
 sealed class DataResult<out T : Any> {
 
     data class Success<out T : Any>(val data: T) : DataResult<T>()

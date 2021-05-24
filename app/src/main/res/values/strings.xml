@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">busqueda mercadolibre</string>
+    <string name="app_name">Mercado-Libre COL</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="details">Detalles: </string>
+    <string name="new_">nuevo</string>
+    <string name="used">usado</string>
+    <string name="condition">Condicion:</string>
+    <string name="empty_text">Texto vacio</string>
+    <string name="activate_network">Active servicio de Internet</string>
+    <string name="requiered_internet">Para la busqueda se requiere permiso de Internet</string>
 </resources>

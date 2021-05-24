@@ -1,6 +1,8 @@
 package com.dfl.busquedamercadolibre.model.mappers
 
 import com.dfl.busquedamercadolibre.model.Product
+import com.dfl.busquedamercadolibre.utils.Constants.CONDITION_USAGE
+import com.dfl.busquedamercadolibre.utils.ECondition
 import com.dfl.busquedamercadolibre.view.uimodel.Item
 
 object ProductDTO {
@@ -10,9 +12,8 @@ object ProductDTO {
                 id = it.id,
                 title = it.title,
                 price = it.price,
-                condition = it.condition,
+                condition = if (it.condition == CONDITION_USAGE) ECondition.USED else ECondition.NEW,
                 link = it.permalink,
-                thumbnail = it.thumbnail,
                 thumbnailId = it.thumbnailId
             )
         }

@@ -3,6 +3,8 @@ buildscript {
     ext.kotlin_version = "1.5.0"
     ext.nav_version = "2.3.5"
     ext.gson_version = '2.8.6'
+    ext.lottieVersion = '3.7.0'
+
     repositories {
         google()
         mavenCentral()

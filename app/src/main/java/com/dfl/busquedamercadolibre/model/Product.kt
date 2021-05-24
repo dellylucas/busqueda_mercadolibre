@@ -13,8 +13,6 @@ data class Product(
     val condition: String,
     @SerializedName("permalink")
     val permalink: String,
-    @SerializedName("thumbnail")
-    val thumbnail: String,
     @SerializedName("thumbnail_id")
     val thumbnailId: String,
 )

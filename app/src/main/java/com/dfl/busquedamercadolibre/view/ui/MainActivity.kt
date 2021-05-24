@@ -1,12 +1,11 @@
 package com.dfl.busquedamercadolibre.view.ui
 
-import android.R
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController.OnDestinationChangedListener
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.dfl.busquedamercadolibre.databinding.ActivityMainBinding
 
 
@@ -19,18 +18,17 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-      /*  val model: SearchViewModel by viewModels()
-        model.getUsers().observe(this, Observer<List<User>>{ users ->
-            // update UI
-        })*/
-       /* val navHostFragment = supportFragmentManager.findFragmentById(binding.navHostFragment.id) as NavHostFragment
-        navHostFragment.navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            val id = destination
-            this.supportActionBar?.show()
-            /*when (id) {
-                R.id.searchFragment ->this.supportActionBar?.hide()
-                else -> this.supportActionBar?.hide()
-            }*/
-        }*/
+        val navController =
+            (supportFragmentManager.findFragmentById(binding.navHostFragment.id) as NavHostFragment).navController
+
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+
+    }
+
+    fun setLoading(isVisible: Boolean) {
+        val visibility = if (isVisible) View.VISIBLE else View.GONE
+        binding.backgroundView.visibility = visibility
+        binding.animationView.visibility = visibility
     }
 }

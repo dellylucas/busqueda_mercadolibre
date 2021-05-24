@@ -1,6 +1,5 @@
 package com.dfl.busquedamercadolibre.view.ui
 
-import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -15,14 +14,15 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.dfl.busquedamercadolibre.R
 import com.dfl.busquedamercadolibre.databinding.FragmentSearchBinding
 import com.dfl.busquedamercadolibre.utils.Constants.CODE_PERMISSION
+import com.dfl.busquedamercadolibre.utils.Constants.PERMISSIONS
 import com.dfl.busquedamercadolibre.utils.hideKeyboard
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 class SearchFragment : Fragment() {
 
@@ -46,6 +46,24 @@ class SearchFragment : Fragment() {
             requireActivity()
         ).get(SearchViewModel::class.java)
         binding.searchTextInputEditText.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        setListeners(view)
+        vm.result.observe(viewLifecycleOwner, { error ->
+            error?.let {
+                (activity as MainActivity).setLoading(false)
+                //si no hay error pasa a mostrar los productos de lo contrario muestra el error
+                if (error.isEmpty()) {
+                    findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToItemsFragment())
+                    binding.searchTextInputEditText.apply {
+                        text?.clear()
+                        clearFocus()
+                    }
+                } else showToast(it)
+            }
+        })
+
+    }
+
+    private fun setListeners(view: View) {
         binding.searchTextInputEditText.setOnEditorActionListener { v, _, _ ->
             searchWord(v)
             true
@@ -53,26 +71,29 @@ class SearchFragment : Fragment() {
         binding.searchButton.setOnClickListener {
             searchWord(view)
         }
-        vm.result.observe(viewLifecycleOwner, {
-            it?.let {
-                if (it.isEmpty()) findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToItemsFragment())
-                else showToast(it)
-            }
-        })
-
     }
 
+    /**
+     * al presionar boton de busqueda determina uina accion segun las condiciones
+     * -comprueba los permisos
+     * -comprueba el internet
+     * -comprueba que el texto no ete vacio
+     * -si se cumplen las anteriores busca la informacion(productos) hacerca de la palabra
+     */
     private fun searchWord(view: View) {
         val text = binding.searchTextInputEditText.text.toString()
         when {
-            requirePermission() -> showToast("Para la busqueda se requiere permiso de Internet")
-            getConnection() -> showToast("Active servicio de Internet")
-            text.isEmpty() -> showToast("Texto vacio")
+            requirePermission() -> showToast(getString(R.string.requiered_internet))
+            getConnection() -> showToast(getString(R.string.activate_network))
+            text.isEmpty() -> showToast(getString(R.string.empty_text))
             else -> searchByName(text)
         }
         requireContext().hideKeyboard(view)
     }
 
+    /**
+     * Comprueba si hay conexion a internet
+     */
     private fun getConnection(): Boolean {
         val cm =
             requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -82,35 +103,39 @@ class SearchFragment : Fragment() {
         return activeNetwork == null
     }
 
+    /**
+     * muestra mensaje instantaneo al usuario
+     */
     private fun showToast(it: String) {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
 
+    /**
+     * Busca en la fuente de datos los items o productos a mostrar que se relacionen con la palabra escrita
+     */
     private fun searchByName(query: String) {
+        (activity as MainActivity).setLoading(true)
         CoroutineScope(Dispatchers.IO).launch {
             vm.getItems(query)
         }
     }
 
+    /**
+     * comprueba y si es el caso solicitqa permisos necesarios
+     */
     private fun requirePermission(): Boolean {
         val statePermission =
-            requireContext().checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_DENIED
+            PERMISSIONS.map { requireContext().checkSelfPermission(it) }
+                .contains(PackageManager.PERMISSION_DENIED)
+
         if (statePermission) {
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf(Manifest.permission.INTERNET),
+                PERMISSIONS,
                 CODE_PERMISSION
             )
         }
         return statePermission
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onDestroyView() {
@@ -119,5 +144,4 @@ class SearchFragment : Fragment() {
         vm.result.removeObservers(this)
         vm.resetValues()
     }
-
 }

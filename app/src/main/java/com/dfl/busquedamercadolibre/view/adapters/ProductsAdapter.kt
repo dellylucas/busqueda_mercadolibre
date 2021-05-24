@@ -12,7 +12,11 @@ import com.dfl.busquedamercadolibre.utils.Constants.URL_MERCADO_LIBRE_IMAGE_TYPE
 import com.dfl.busquedamercadolibre.view.uimodel.Item
 import kotlin.math.roundToInt
 
-class ProductsAdapter(private var productsList: List<Item>, val context: Context) :
+class ProductsAdapter(
+    private var productsList: List<Item>,
+    val context: Context,
+    val iNotifySelectedItem: INotifySelectedItem
+) :
     RecyclerView.Adapter<ProductsAdapter.ProductRecyclerHolder>() {
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ProductRecyclerHolder {
@@ -22,15 +26,15 @@ class ProductsAdapter(private var productsList: List<Item>, val context: Context
 
     override fun getItemCount() = this.productsList.size
 
-    override fun onBindViewHolder(p0: ProductRecyclerHolder, p1: Int) {
-        val paymentBean: Item = productsList[p1]
-        p0.setParams(paymentBean)
+    override fun onBindViewHolder(holder: ProductRecyclerHolder, position: Int) {
+        val paymentBean: Item = productsList[position]
+        holder.setParams(paymentBean,position)
     }
 
     inner class ProductRecyclerHolder(val view: AdapterProductsBinding) :
         RecyclerView.ViewHolder(view.root) {
 
-        fun setParams(item: Item) {
+        fun setParams(item: Item, position: Int) {
             view.nameTextView.text = item.title
             view.PriceTextView.text = "COP " + item.price.roundToInt().toString()
             val url = URL_MERCADO_LIBRE_IMAGE + item.thumbnailId + URL_MERCADO_LIBRE_IMAGE_TYPE
@@ -38,6 +42,13 @@ class ProductsAdapter(private var productsList: List<Item>, val context: Context
                 .load(url)
                 .placeholder(R.mipmap.ic_load)
                 .into(view.productImageView)
+            view.root.setOnClickListener {
+                iNotifySelectedItem.selectedItem(position)
+            }
         }
     }
+}
+
+interface INotifySelectedItem {
+    fun selectedItem(position: Int)
 }
