@@ -5,5 +5,5 @@ import com.dfl.busquedamercadolibre.view.uimodel.Item
 
 interface IProductsDataSource {
 
-    fun getProducts(keySearch: String): DataResult<List<Item>>
+    suspend fun getProducts(keySearch: String): DataResult<List<Item>>
 }

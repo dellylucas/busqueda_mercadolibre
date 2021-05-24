@@ -1,5 +1,7 @@
 package com.dfl.busquedamercadolibre.utils
 
+import retrofit2.HttpException
+
 sealed class DataResult<out T : Any> {
 
     data class Success<out T : Any>(val data: T) : DataResult<T>()

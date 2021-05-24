@@ -15,12 +15,12 @@ class SearchViewModel(val productsRepository: ProductsRepository) : ViewModel() 
     private val _result = MutableLiveData<String?>()
     val result: LiveData<String?> = _result
 
-    fun getItems(keySearch: String) {
+    suspend fun getItems(keySearch: String) {
         // can be launched in a separate asynchronous job
         val result = productsRepository.getProducts(keySearch)
 
         if (result is DataResult.Success) {
-            _items.value = result.data
+            _items.postValue(result.data)
             _result.postValue("")
         } else {
             _result.value = (result as DataResult.Error).exception.toString()

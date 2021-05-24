@@ -5,6 +5,6 @@ import com.dfl.busquedamercadolibre.view.uimodel.Item
 
 object ProductDTO {
     fun getUIItems(products: List<Product>): List<Item> {
-        return products.map { Item(id = it.id) }
+        return products.map { Item(it.id, it.title, it.price) }
     }
 }
