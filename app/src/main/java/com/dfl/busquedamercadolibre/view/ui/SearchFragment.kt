@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +21,6 @@ import com.dfl.busquedamercadolibre.utils.Constants.CODE_PERMISSION
 import com.dfl.busquedamercadolibre.utils.Constants.PERMISSIONS
 import com.dfl.busquedamercadolibre.utils.hideKeyboard
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
 
@@ -46,10 +44,10 @@ class SearchFragment : Fragment() {
             requireActivity()
         ).get(SearchViewModel::class.java)
         binding.searchTextInputEditText.imeOptions = EditorInfo.IME_ACTION_SEARCH
-        setListeners(view)
+        setListeners()
         vm.result.observe(viewLifecycleOwner, { error ->
             error?.let {
-                (activity as MainActivity).setLoading(false)
+                (activity as IBaseActivity).setLoading(false)
                 //si no hay error pasa a mostrar los productos de lo contrario muestra el error
                 if (error.isEmpty()) {
                     findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToItemsFragment())
@@ -57,19 +55,25 @@ class SearchFragment : Fragment() {
                         text?.clear()
                         clearFocus()
                     }
-                } else showToast(it)
+                } else showToast(String.format("%s %s", it, getString(R.string.error_admin)))
             }
         })
 
     }
 
-    private fun setListeners(view: View) {
-        binding.searchTextInputEditText.setOnEditorActionListener { v, _, _ ->
-            searchWord(v)
+    private fun setListeners() {
+        binding.searchTextInputEditText.setOnEditorActionListener { v, _, event ->
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                val text = binding.searchTextInputEditText.text.toString()
+                searchWord(text)
+                requireContext().hideKeyboard(v)
+            }
             true
         }
         binding.searchButton.setOnClickListener {
-            searchWord(view)
+            val text = binding.searchTextInputEditText.text.toString()
+            searchWord(text)
+            requireContext().hideKeyboard(it)
         }
     }
 
@@ -80,15 +84,13 @@ class SearchFragment : Fragment() {
      * -comprueba que el texto no ete vacio
      * -si se cumplen las anteriores busca la informacion(productos) hacerca de la palabra
      */
-    private fun searchWord(view: View) {
-        val text = binding.searchTextInputEditText.text.toString()
+    private fun searchWord(keySearch: String) {
         when {
             requirePermission() -> showToast(getString(R.string.requiered_internet))
             getConnection() -> showToast(getString(R.string.activate_network))
-            text.isEmpty() -> showToast(getString(R.string.empty_text))
-            else -> searchByName(text)
+            keySearch.isEmpty() -> showToast(getString(R.string.empty_text))
+            else -> searchByName(keySearch)
         }
-        requireContext().hideKeyboard(view)
     }
 
     /**
@@ -114,10 +116,8 @@ class SearchFragment : Fragment() {
      * Busca en la fuente de datos los items o productos a mostrar que se relacionen con la palabra escrita
      */
     private fun searchByName(query: String) {
-        (activity as MainActivity).setLoading(true)
-        CoroutineScope(Dispatchers.IO).launch {
-            vm.getItems(query)
-        }
+        (activity as IBaseActivity).setLoading(true)
+        vm.getItems(query)
     }
 
     /**

@@ -9,7 +9,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.dfl.busquedamercadolibre.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IBaseActivity {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun setLoading(isVisible: Boolean) {
+    override fun setLoading(isVisible: Boolean) {
         val visibility = if (isVisible) View.VISIBLE else View.GONE
         binding.backgroundView.visibility = visibility
         binding.animationView.visibility = visibility

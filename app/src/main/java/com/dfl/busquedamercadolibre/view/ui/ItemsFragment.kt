@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.dfl.busquedamercadolibre.databinding.FragmentItemsBinding
 import com.dfl.busquedamercadolibre.view.adapters.INotifySelectedItem
 import com.dfl.busquedamercadolibre.view.adapters.ProductsAdapter
+import com.dfl.busquedamercadolibre.view.uimodel.Item
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
 
 
@@ -45,11 +46,9 @@ class ItemsFragment : Fragment(), INotifySelectedItem {
         _binding = null
     }
 
-    override fun selectedItem(position: Int) {
+    override fun selectedItem(item: Item) {
         findNavController().navigate(
-            ItemsFragmentDirections.actionItemsFragmentToDetailFragment(
-                vm.items.value!![position]
-            )
+            ItemsFragmentDirections.actionItemsFragmentToDetailFragment(item)
         )
     }
 

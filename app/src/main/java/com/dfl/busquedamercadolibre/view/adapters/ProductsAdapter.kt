@@ -28,13 +28,13 @@ class ProductsAdapter(
 
     override fun onBindViewHolder(holder: ProductRecyclerHolder, position: Int) {
         val paymentBean: Item = productsList[position]
-        holder.setParams(paymentBean,position)
+        holder.bind(paymentBean)
     }
 
     inner class ProductRecyclerHolder(val view: AdapterProductsBinding) :
         RecyclerView.ViewHolder(view.root) {
 
-        fun setParams(item: Item, position: Int) {
+        fun bind(item: Item) {
             view.nameTextView.text = item.title
             view.PriceTextView.text = "COP " + item.price.roundToInt().toString()
             val url = URL_MERCADO_LIBRE_IMAGE + item.thumbnailId + URL_MERCADO_LIBRE_IMAGE_TYPE
@@ -43,12 +43,12 @@ class ProductsAdapter(
                 .placeholder(R.mipmap.ic_load)
                 .into(view.productImageView)
             view.root.setOnClickListener {
-                iNotifySelectedItem.selectedItem(position)
+                iNotifySelectedItem.selectedItem(item)
             }
         }
     }
 }
 
 interface INotifySelectedItem {
-    fun selectedItem(position: Int)
+    fun selectedItem(item: Item)
 }

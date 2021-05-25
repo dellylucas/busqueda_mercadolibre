@@ -8,4 +8,5 @@
     <string name="empty_text">Texto vacio</string>
     <string name="activate_network">Active servicio de Internet</string>
     <string name="requiered_internet">Para la busqueda se requiere permiso de Internet</string>
+    <string name="error_admin">Consulte con el administrador del sistema</string>
 </resources>

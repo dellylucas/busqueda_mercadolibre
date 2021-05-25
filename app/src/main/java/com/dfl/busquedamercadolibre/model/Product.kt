@@ -14,5 +14,5 @@ data class Product(
     @SerializedName("permalink")
     val permalink: String,
     @SerializedName("thumbnail_id")
-    val thumbnailId: String,
+    val thumbnailId: String?
 )

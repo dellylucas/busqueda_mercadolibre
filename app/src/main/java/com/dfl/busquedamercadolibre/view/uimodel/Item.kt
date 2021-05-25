@@ -11,5 +11,5 @@ data class Item(
     val price: Float,
     val condition: ECondition,
     val link: String,
-    val thumbnailId: String
+    val thumbnailId: String?
 ) : Parcelable
