@@ -21,6 +21,7 @@ import com.dfl.busquedamercadolibre.utils.Constants.CODE_PERMISSION
 import com.dfl.busquedamercadolibre.utils.Constants.PERMISSIONS
 import com.dfl.busquedamercadolibre.utils.hideKeyboard
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
+import com.dfl.busquedamercadolibre.viewmodel.SearchViewModelFactory
 
 class SearchFragment : Fragment() {
 
@@ -40,8 +41,9 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val factory = SearchViewModelFactory()
         vm = ViewModelProvider(
-            requireActivity()
+            requireActivity(), factory
         ).get(SearchViewModel::class.java)
         binding.searchTextInputEditText.imeOptions = EditorInfo.IME_ACTION_SEARCH
         setListeners()

@@ -12,6 +12,7 @@ import com.dfl.busquedamercadolibre.view.adapters.INotifySelectedItem
 import com.dfl.busquedamercadolibre.view.adapters.ProductsAdapter
 import com.dfl.busquedamercadolibre.view.uimodel.Item
 import com.dfl.busquedamercadolibre.viewmodel.SearchViewModel
+import com.dfl.busquedamercadolibre.viewmodel.SearchViewModelFactory
 
 
 class ItemsFragment : Fragment(), INotifySelectedItem {
@@ -32,7 +33,10 @@ class ItemsFragment : Fragment(), INotifySelectedItem {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        vm = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
+        val factory = SearchViewModelFactory()
+        vm = ViewModelProvider(
+            requireActivity(), factory
+        ).get(SearchViewModel::class.java)
 
         vm.items.observe(viewLifecycleOwner, {
             val adapter = ProductsAdapter(it, requireContext(), this)
