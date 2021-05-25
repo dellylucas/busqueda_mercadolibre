@@ -4,6 +4,18 @@ buildscript {
     ext.nav_version = "2.3.5"
     ext.gson_version = '2.8.6'
     ext.lottieVersion = '3.7.0'
+    ext.fragment_version = '1.3.4'
+    ext.junit = '4.13.2'
+    ext.ext_junit = '1.1.2'
+    ext.espresso = '3.3.0'
+    ext.glide = '4.12.0'
+    ext.coroutines = '1.4.3'
+    ext.interceptor = '4.2.1'
+    ext.retrofit = '2.9.0'
+    ext.lifecycle = '2.2.0'
+    ext.support = '1.0.0'
+    ext.constraintlayout = '2.0.4'
+    ext.appcompat = '1.3.0'
 
     repositories {
         google()
