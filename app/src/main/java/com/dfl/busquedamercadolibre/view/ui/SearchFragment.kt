@@ -64,8 +64,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.searchTextInputEditText.setOnEditorActionListener { v, _, event ->
-            if (event.action == KeyEvent.ACTION_DOWN) {
+        binding.searchTextInputEditText.setOnEditorActionListener { v, action, event ->
+            if (event?.action == KeyEvent.ACTION_DOWN || action == EditorInfo.IME_ACTION_SEARCH ) {
                 val text = binding.searchTextInputEditText.text.toString()
                 searchWord(text)
                 requireContext().hideKeyboard(v)
